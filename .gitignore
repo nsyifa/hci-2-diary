@@ -35,5 +35,5 @@ yarn-error.log*
 next-env.d.ts
 
 # local csv and image data
-*.csv
+data.csv
 /public/uploads
