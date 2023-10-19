@@ -5,6 +5,7 @@ import * as fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
+// Function to upload images to public folder
 export async function POST(req) {
   const formData = await req.formData();
   const formDataEntryValues = Array.from(formData.values());
@@ -18,9 +19,7 @@ export async function POST(req) {
       const file = formDataEntryValue;
       const buffer = Buffer.from(await file.arrayBuffer());
 
-      // Generate a unique filename using UUID (or use a timestamp, etc.)
-      //   const uniqueFilename = `${uuidv4()}_${file.name}`;
-      //   const filename = `public/${uniqueFilename}`;
+      // Generate a unique filename using UUID
       const uniqueFilename = `${uuidv4()}_${file.name}`;
 
       fs.writeFileSync(`public/uploads/${uniqueFilename}`, buffer);
@@ -30,35 +29,34 @@ export async function POST(req) {
   return NextResponse.json({ success: true, filenames: savedImageFilenames });
 }
 
-// Configure multer to specify where to store the uploaded files
-// const upload = multer({
-//   dest: path.join(process.cwd(), "public/uploads"), // Specify the directory for saving uploaded files
-// });
+// Function to delete images in the public folder
+export async function DELETE(req) {
+  const { searchParams } = req.nextUrl;
+  const filenames = searchParams.get("filenames");
 
-// export const config = {
-//   api: {
-//     bodyParser: false, // Disable the default body parsing
-//   },
-// };
+  //Split the string into an array of filenames
+  const filenamesArray = filenames.split(";");
 
-// export async function POST(req) {
-//   try {
-//     // Use multer to handle file uploads
-//     upload.single("image")(req, res, async (err) => {
-//       if (err) {
-//         console.error("Error uploading file:", err);
-//         return NextResponse.error(err);
-//       }
+  const deletedImageFilenames = [];
 
-//       // Access the uploaded file information
-//       const uploadedFile = req.file;
-//       const fileName = uploadedFile.filename;
+  for (const filename of filenamesArray) {
+    const imagePath = path.join("public/uploads", filename);
 
-//       // Return the name of the saved image
-//       return NextResponse.json({ fileName });
-//     });
-//   } catch (error) {
-//     console.error("Error handling file upload:", error);
-//     return NextResponse.error(error);
-//   }
-// }
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+      deletedImageFilenames.push(filename);
+    }
+  }
+
+  if (deletedImageFilenames.length > 0) {
+    return NextResponse.json({
+      success: true,
+      deletedFilenames: deletedImageFilenames,
+    });
+  } else {
+    return NextResponse.json({
+      success: false,
+      message: "No files were deleted.",
+    });
+  }
+}

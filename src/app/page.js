@@ -20,8 +20,17 @@ export default function Home() {
       });
   }, []);
 
+  function handleUpdate() {
+    fetch("/api/diary-data")
+      .then((res) => res.json())
+      .then((data) => {
+        setCsvData(data);
+        setDiaries([...data]);
+      });
+  }
+
   function getTitle(row_data) {
-    const title = row_data[1] + " " + row_data[2] + row_data[3];
+    const title = row_data[1] + " " + row_data[2] + " " + row_data[3];
     return title;
   }
 
@@ -34,30 +43,55 @@ export default function Home() {
     <div className="m-5">
       <h1 className="text-2xl">My Diary: John Doe</h1>
       <div className="flex justify-start gap-5 mt-5">
-        <Link href="/create">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleCreate}
-          >
-            Create
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleCreate}
+        >
+          Create
+        </button>
+        <Link href="/edit">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Edit
           </button>
         </Link>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Edit
-        </button>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button
+          onClick={handleUpdate}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
           Update
         </button>
+        <Link href="/delete">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Delete
+          </button>
+        </Link>
       </div>
 
       {/* Display CSV data */}
       <div className="mt-5">
-        <h2 className="text-xl">CSV Data</h2>
-        <ul>
-          {csvData &&
+        <h2 className="text-xl mb-3">Entries</h2>
+        <ul className="w-max">
+          {csvData?.[0]?.[0] &&
             csvData.map((row, index) => (
-              <Link href="/diary">
-                <li key={index}>{getTitle(row)}</li>
+              <Link
+                key={row[0]}
+                href={{
+                  pathname: "/diary",
+                  query: {
+                    id: row[0],
+                    date: getTitle(row),
+                    weather: row[4],
+                    text: row[5],
+                    images: row[6],
+                    bgcolor: row[7],
+                    tbcolor: row[8],
+                    textcolor: row[9],
+                  },
+                }}
+              >
+                <li className="bg-slate-200 mb-3 px-3 py-2 rounded-md hover:bg-slate-300">
+                  {getTitle(row)}
+                </li>
               </Link>
             ))}
         </ul>
