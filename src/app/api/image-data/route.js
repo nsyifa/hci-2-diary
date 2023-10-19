@@ -1,6 +1,5 @@
 // Import necessary modules
 import { NextResponse } from "next/server";
-import multer from "multer";
 import * as fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
