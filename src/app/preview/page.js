@@ -101,7 +101,10 @@ export default function page() {
   };
 
   return (
-    <div suppressHydrationWarning className="w-full flex items-center flex-col">
+    <div
+      suppressHydrationWarning
+      className="w-full flex items-center flex-col mb-5"
+    >
       {images && (images[0] instanceof File || images[0] instanceof Blob) ? (
         <DiaryTemplate
           data={{ ...preview, images: images }}

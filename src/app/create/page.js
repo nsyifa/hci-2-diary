@@ -195,7 +195,7 @@ export default function Create() {
   };
 
   return (
-    <div className="mt-5 mx-auto w-[40%]">
+    <div className="mt-5 mx-auto w-[40%] mb-5">
       <h1 className="text-2xl mb-4 text-center">Fill in your diary</h1>
       <form onSubmit={handleSubmit} className="w-full">
         <div className="mb-4 w-full">

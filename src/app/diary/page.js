@@ -49,7 +49,7 @@ export default function Diary() {
   }
 
   return (
-    <div className="flex flex-row justify-center w-full gap-8">
+    <div className="flex flex-row justify-center w-full gap-8 mb-10">
       <div className="flex flex-col">
         <Link href="/">
           <button className="mt-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
